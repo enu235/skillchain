@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "claude-code-capabilities",
+    "name": "Claude Code CLI capabilities for deep research",
+    "framing": "Identify and explain the Claude Code CLI features most useful for performing deep, multi-step financial research on a public stock — sub-agents, slash commands, hooks, MCP servers, web search/fetch, file system access, plan mode, and skills — with concrete examples and configuration tips a developer would actually use."
+  },
+  {
+    "slug": "claude-agent-sdk",
+    "name": "Programmatic stock research with the Claude Agent SDK",
+    "framing": "Show how the Claude Agent SDK (Python and TypeScript) can be used to programmatically orchestrate stock-research workflows: tool use, custom tools, MCP server integration, streaming, prompt caching, and headless/automated runs. Cite the official docs and SDK repos and include short code patterns."
+  },
+  {
+    "slug": "tsla-research-workflow",
+    "name": "Concrete TSLA deep-research workflow",
+    "framing": "Lay out a concrete, step-by-step workflow for using a Claude-powered agent to research TSLA's price movements and the why behind them — data sources (SEC filings, earnings calls, news APIs, price/options data, social sentiment), analytical frameworks (fundamentals, technicals, macro, narrative/catalysts), and the output artifacts a researcher should produce."
+  },
+  {
+    "slug": "local-llm-collaboration",
+    "name": "Collaborating with local LLMs (Ollama, LM Studio, llama.cpp)",
+    "framing": "Identify architecture patterns for combining Claude (cloud) with local LLMs running via Ollama, LM Studio, or llama.cpp on a research workflow — including OpenAI-compatible APIs, division of labor, routing/escalation, privacy and cost tradeoffs, and how to wire a local model into Claude Code or the Agent SDK as a tool or MCP server."
+  },
+  {
+    "slug": "hybrid-architecture",
+    "name": "End-to-end hybrid Claude + local LLM research architecture",
+    "framing": "Describe an end-to-end hybrid architecture combining Claude Code/SDK with a local LLM for ongoing stock research: orchestration topology (who does what), integration mechanisms (MCP, OpenAI-compatible adapters, message queues, file artifacts), iteration loops (cron, hooks, scheduled SDK runs), and pitfalls to avoid (latency, context-window limits, hallucination on numbers)."
+  }
+]

@@ -1,0 +1,174 @@
+{
+  "subtopic": "hybrid-architecture",
+  "subtopic_name": "End-to-end hybrid Claude + local LLM research architecture",
+  "summary": "A practical hybrid stock-research stack puts Claude Opus 4.7 (1M-token context, deep reasoning) at the planner/critic role and a local model such as Llama 3.1 8B (128k context, runs on Ollama) as the bulk worker for triage, summarization of filings, and chart pre-processing. Integration is via Model Context Protocol servers (spec 2025-11-25), an OpenAI-compatible LiteLLM gateway fronting 100+ providers, and shared file/SQLite artifacts. Iteration is driven by Claude Code hooks (PreToolUse, PostToolUse), the /loop skill, and headless SDK runs in GitHub Actions. Key pitfalls: numeric hallucination on prices and ratios, context-window blowups, tool-loop oscillation, and quote-mixing between models.",
+  "key_claims": [
+    {
+      "claim": "MCP spec version 2025-11-25 introduces async Tasks, server-side agent loops, and parallel tool calls, making it suitable as the integration spine between Claude Code and a local-LLM tool server.",
+      "source_url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "confidence": "high"
+    },
+    {
+      "claim": "An MCP server like mcp-local-llm lets Claude Code delegate mechanical tasks to a local model (Ollama or any OpenAI-compatible backend), with Claude reviewing and the local model producing volume.",
+      "source_url": "https://lobehub.com/mcp/aplaceforallmystuff-mcp-local-llm",
+      "confidence": "high"
+    },
+    {
+      "claim": "LiteLLM provides a single OpenAI-compatible gateway to 100+ LLM providers, so a hybrid stack can swap between Claude, local Ollama, vLLM, or Bedrock without rewriting client code.",
+      "source_url": "https://github.com/BerriAI/litellm",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Opus 4.7 ships with a 1M-token context window at standard API pricing and explicitly targets dense financial filings, charts, and long-running agentic workflows.",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7",
+      "confidence": "high"
+    },
+    {
+      "claim": "Llama 3.1 8B supports a 128k context window locally via Ollama but Ollama defaults to 2048 tokens unless explicitly configured, a frequent source of silent truncation in hybrid pipelines.",
+      "source_url": "https://localaimaster.com/models/llama-3-1-8b",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Code hooks (PreToolUse, PostToolUse, Stop, plus prompt-based and agent-based hooks) run shell commands at lifecycle events, enabling deterministic iteration loops such as auto-formatting, validation gates, or kicking off local-LLM jobs after each Claude tool call.",
+      "source_url": "https://code.claude.com/docs/en/hooks-guide",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Code in headless mode (claude -p) runs the full agent loop from a single prompt and exits, which is the recommended pattern for scheduled SDK runs in GitHub Actions or cron-driven research jobs.",
+      "source_url": "https://www.codewithseb.com/blog/claude-code-headless-mode-cicd-automation-playbook",
+      "confidence": "high"
+    },
+    {
+      "claim": "Without verified data infrastructure, mainstream LLMs hallucinate on up to 41% of finance-related queries, and one documented case had an LLM mis-stating Apple gross margin as 67% vs the actual 45%, causing a roughly $22B valuation error.",
+      "source_url": "https://www.packtpub.com/en-us/newsletters/how-to-tutorials/detecting-addressing-llm-hallucinations-in-finance",
+      "confidence": "medium"
+    },
+    {
+      "claim": "RAG-style grounding combined with tool calls reduces hallucinations by 60-80% by forcing the model to read prices and fundamentals from a trusted database rather than parametric memory.",
+      "source_url": "https://masterofcode.com/blog/hallucinations-in-llms-what-you-need-to-know-before-integration",
+      "confidence": "medium"
+    },
+    {
+      "claim": "The QuantMCP architecture pattern instructs the LLM not to answer factual financial queries from parametric memory and to fetch all data points via MCP-exposed tools (e.g. yfinance, Wind), which is the core anti-hallucination pattern for a TSLA-style research stack.",
+      "source_url": "https://arxiv.org/html/2506.06622v1",
+      "confidence": "high"
+    },
+    {
+      "claim": "On consumer hardware (RTX 4070 Ti Super), local 22B-class models can match or beat Claude latency for short prompts (~1.4s vs ~2.1s) but cloud APIs win for long outputs because they sustain 60-80 tok/s vs 15-25 tok/s locally, which determines who should do bulk work vs deep reasoning.",
+      "source_url": "https://www.kunalganglani.com/blog/local-llm-vs-claude-coding-benchmark",
+      "confidence": "medium"
+    }
+  ],
+  "data_points": [
+    {
+      "label": "MCP spec version (latest)",
+      "value": "2025-11-25",
+      "unit": "release date",
+      "source_url": "https://modelcontextprotocol.io/specification/2025-11-25"
+    },
+    {
+      "label": "LiteLLM supported LLM providers",
+      "value": 100,
+      "unit": "providers (100+)",
+      "source_url": "https://github.com/BerriAI/litellm"
+    },
+    {
+      "label": "Claude Opus 4.7 context window",
+      "value": 1000000,
+      "unit": "tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7"
+    },
+    {
+      "label": "Claude Opus 4.7 max output tokens",
+      "value": 128000,
+      "unit": "tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7"
+    },
+    {
+      "label": "Llama 3.1 8B context window",
+      "value": 128000,
+      "unit": "tokens",
+      "source_url": "https://localaimaster.com/models/llama-3-1-8b"
+    },
+    {
+      "label": "Ollama default context (must be raised)",
+      "value": 2048,
+      "unit": "tokens",
+      "source_url": "https://www.promptquorum.com/local-llms/long-context-local-llms"
+    },
+    {
+      "label": "Claude API typical turn latency",
+      "value": "1-3",
+      "unit": "seconds/turn",
+      "source_url": "https://www.kunalganglani.com/blog/local-llm-vs-claude-coding-benchmark"
+    },
+    {
+      "label": "Local 22B model latency (short prompt, RTX 4070 Ti Super)",
+      "value": 1.4,
+      "unit": "seconds/turn",
+      "source_url": "https://www.kunalganglani.com/blog/local-llm-vs-claude-coding-benchmark"
+    },
+    {
+      "label": "Cloud API throughput",
+      "value": "60-80",
+      "unit": "tokens/sec",
+      "source_url": "https://www.kunalganglani.com/blog/local-llm-vs-claude-coding-benchmark"
+    },
+    {
+      "label": "Local consumer-GPU throughput",
+      "value": "15-25",
+      "unit": "tokens/sec",
+      "source_url": "https://www.kunalganglani.com/blog/local-llm-vs-claude-coding-benchmark"
+    },
+    {
+      "label": "LLM hallucination rate on finance queries (ungrounded)",
+      "value": 41,
+      "unit": "%",
+      "source_url": "https://www.packtpub.com/en-us/newsletters/how-to-tutorials/detecting-addressing-llm-hallucinations-in-finance"
+    },
+    {
+      "label": "Hallucination reduction with RAG/tool grounding",
+      "value": "60-80",
+      "unit": "%",
+      "source_url": "https://masterofcode.com/blog/hallucinations-in-llms-what-you-need-to-know-before-integration"
+    },
+    {
+      "label": "Claude Opus 4.7 Finance Agent v1.1 score",
+      "value": 64.4,
+      "unit": "%",
+      "source_url": "https://llm-stats.com/blog/research/claude-opus-4-7-launch"
+    }
+  ],
+  "recommended_charts": [
+    {
+      "title": "Context window: Claude Opus 4.7 vs Llama 3.1 8B vs Ollama default",
+      "chart_type": "bar",
+      "x_label": "Model / setting",
+      "y_label": "Context window (tokens)",
+      "data_indices": [2, 4, 5]
+    },
+    {
+      "title": "Hallucination on ungrounded finance queries vs reduction with RAG/tools",
+      "chart_type": "bar",
+      "x_label": "Condition",
+      "y_label": "Percent",
+      "data_indices": [10, 11]
+    }
+  ],
+  "sources": [
+    "https://modelcontextprotocol.io/specification/2025-11-25",
+    "https://github.com/BerriAI/litellm",
+    "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7",
+    "https://code.claude.com/docs/en/hooks-guide",
+    "https://lobehub.com/mcp/aplaceforallmystuff-mcp-local-llm",
+    "https://localaimaster.com/models/llama-3-1-8b",
+    "https://www.promptquorum.com/local-llms/long-context-local-llms",
+    "https://www.codewithseb.com/blog/claude-code-headless-mode-cicd-automation-playbook",
+    "https://www.packtpub.com/en-us/newsletters/how-to-tutorials/detecting-addressing-llm-hallucinations-in-finance",
+    "https://masterofcode.com/blog/hallucinations-in-llms-what-you-need-to-know-before-integration",
+    "https://arxiv.org/html/2506.06622v1",
+    "https://www.kunalganglani.com/blog/local-llm-vs-claude-coding-benchmark",
+    "https://llm-stats.com/blog/research/claude-opus-4-7-launch"
+  ],
+  "limitations": "Latency comparison numbers come from a single consumer-hardware benchmark and may not generalize; the 41% finance-hallucination figure is from an industry tutorial citing aggregate research rather than a single peer-reviewed paper, so the 'medium' confidence flag is applied. No direct head-to-head benchmark of a fully integrated Claude+local hybrid stock-research stack was found, so architecture patterns are synthesized from the component sources."
+}

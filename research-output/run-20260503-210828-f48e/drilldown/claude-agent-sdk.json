@@ -1,0 +1,227 @@
+{
+  "subtopic": "claude-agent-sdk",
+  "subtopic_name": "Programmatic stock research with the Claude Agent SDK",
+  "summary": "The Claude Agent SDK (renamed from the Claude Code SDK) is the official Python and TypeScript library that exposes the same agent loop, built-in tools, and context management that powers Claude Code, suitable for orchestrating stock-research workflows. Developers use query() for one-shot async iteration or ClaudeSDKClient for bidirectional sessions, configured by ClaudeAgentOptions (model, allowed_tools, system_prompt, hooks, MCP servers, permission_mode). Custom research tools (e.g., a TSLA price fetcher, SEC filing parser, news scraper) are defined with the @tool decorator and bundled into in-process MCP servers via create_sdk_mcp_server. Streaming, prompt caching, sub-agents, and headless CI runs are first-class.",
+  "key_claims": [
+    {
+      "claim": "The Claude Agent SDK ships official libraries for Python (claude-agent-sdk on PyPI) and TypeScript (@anthropic-ai/claude-agent-sdk on npm), giving the same Claude Code agent loop programmatic access.",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/overview",
+      "confidence": "high"
+    },
+    {
+      "claim": "query() returns an async iterator for single-shot agent runs, while ClaudeSDKClient supports bidirectional multi-turn conversations and is the only path that enables custom in-process tools and hooks.",
+      "source_url": "https://github.com/anthropics/claude-agent-sdk-python",
+      "confidence": "high"
+    },
+    {
+      "claim": "Custom research tools are declared with the @tool decorator and packaged with create_sdk_mcp_server into an in-process MCP server, then exposed through ClaudeAgentOptions.mcp_servers and gated via allowed_tools entries like mcp__tools__greet.",
+      "source_url": "https://platform.claude.com/docs/en/agent-sdk/custom-tools",
+      "confidence": "high"
+    },
+    {
+      "claim": "Streaming is opt-in via include_partial_messages (Python) or includePartialMessages (TypeScript); the SDK then emits StreamEvent messages wrapping raw Claude API events such as content_block_delta with text_delta or input_json_delta chunks.",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/streaming-output",
+      "confidence": "high"
+    },
+    {
+      "claim": "Prompt caching uses cache_control breakpoints with two TTLs: 5-minute writes cost 1.25x the base input price and 1-hour writes cost 2x, while cache reads cost 0.1x of base input regardless of TTL.",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "confidence": "high"
+    },
+    {
+      "claim": "A request may set up to 4 explicit cache_control breakpoints, and the system looks back 20 blocks for prior cache entries before giving up.",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "confidence": "high"
+    },
+    {
+      "claim": "Minimum cacheable prefix is model-dependent: 4096 tokens for Opus 4.7/4.6/4.5 and Haiku 4.5, 2048 tokens for Sonnet 4.6, 1024 tokens for older Sonnet 4.x.",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "confidence": "high"
+    },
+    {
+      "claim": "Opus 4.7, Opus 4.6, and Sonnet 4.6 all expose a 1M-token context window at standard per-token pricing, which fits multi-quarter TSLA filings plus news corpora in a single agent context.",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "confidence": "high"
+    },
+    {
+      "claim": "Opus 4.7 (model id claude-opus-4-7) requires Agent SDK v0.2.111 or later; older SDK versions surface a thinking.type.enabled API error.",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/overview",
+      "confidence": "high"
+    },
+    {
+      "claim": "The SDK supports headless and CI/CD usage and authenticates via ANTHROPIC_API_KEY or third-party providers (Bedrock via CLAUDE_CODE_USE_BEDROCK, Vertex via CLAUDE_CODE_USE_VERTEX, Azure via CLAUDE_CODE_USE_FOUNDRY).",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/overview",
+      "confidence": "high"
+    },
+    {
+      "claim": "Hook callbacks (PreToolUse, PostToolUse, Stop, SessionStart, SessionEnd, UserPromptSubmit) let a research pipeline log every tool call (e.g., audit each WebFetch of a TSLA filing) or block dangerous shell commands deterministically.",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/overview",
+      "confidence": "high"
+    },
+    {
+      "claim": "Sub-agents defined via AgentDefinition (Python) or the agents option (TypeScript) let a top-level research agent delegate focused subtasks (e.g., a 'sec-filings-reader' or 'price-analyst') with their own tool allowlists.",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/overview",
+      "confidence": "high"
+    },
+    {
+      "claim": "External MCP servers (e.g., Playwright for headless browser scraping of Yahoo Finance) plug in via mcp_servers with stdio command and args, alongside SDK in-process servers.",
+      "source_url": "https://platform.claude.com/docs/en/agent-sdk/mcp",
+      "confidence": "high"
+    },
+    {
+      "claim": "The Batch API offers a 50% discount on both input and output tokens and stacks with prompt caching multipliers, useful for overnight backfills of TSLA-related research jobs.",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "confidence": "high"
+    }
+  ],
+  "data_points": [
+    {
+      "label": "Python SDK latest version (claude-agent-sdk)",
+      "value": "0.1.72",
+      "unit": "semver",
+      "source_url": "https://pypi.org/project/claude-agent-sdk/"
+    },
+    {
+      "label": "TypeScript SDK latest version (@anthropic-ai/claude-agent-sdk)",
+      "value": "0.2.126",
+      "unit": "semver",
+      "source_url": "https://github.com/anthropics/claude-agent-sdk-typescript"
+    },
+    {
+      "label": "Minimum Agent SDK version required for Opus 4.7",
+      "value": "0.2.111",
+      "unit": "semver",
+      "source_url": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    {
+      "label": "Python minimum version requirement",
+      "value": "3.10",
+      "unit": "version",
+      "source_url": "https://pypi.org/project/claude-agent-sdk/"
+    },
+    {
+      "label": "5-minute cache write multiplier vs base input",
+      "value": 1.25,
+      "unit": "x",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "1-hour cache write multiplier vs base input",
+      "value": 2,
+      "unit": "x",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "Cache read multiplier vs base input",
+      "value": 0.1,
+      "unit": "x",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "Max cache_control breakpoints per request",
+      "value": 4,
+      "unit": "breakpoints",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "Cache lookback window",
+      "value": 20,
+      "unit": "blocks",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "Min cacheable prefix - Opus 4.7/4.6/4.5 and Haiku 4.5",
+      "value": 4096,
+      "unit": "tokens",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "Min cacheable prefix - Sonnet 4.6",
+      "value": 2048,
+      "unit": "tokens",
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+    },
+    {
+      "label": "Opus 4.7 base input price",
+      "value": 5,
+      "unit": "USD per MTok",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Opus 4.7 output price",
+      "value": 25,
+      "unit": "USD per MTok",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Sonnet 4.6 base input price",
+      "value": 3,
+      "unit": "USD per MTok",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Sonnet 4.6 output price",
+      "value": 15,
+      "unit": "USD per MTok",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Haiku 4.5 base input price",
+      "value": 1,
+      "unit": "USD per MTok",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Haiku 4.5 output price",
+      "value": 5,
+      "unit": "USD per MTok",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Long-context window for Opus 4.7 / Opus 4.6 / Sonnet 4.6",
+      "value": 1000000,
+      "unit": "tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Batch API discount (input and output)",
+      "value": 50,
+      "unit": "%",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Web search tool price",
+      "value": 10,
+      "unit": "USD per 1000 searches",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    }
+  ],
+  "recommended_charts": [
+    {
+      "title": "Claude 4.x model pricing: input vs output per MTok",
+      "chart_type": "bar",
+      "x_label": "Model",
+      "y_label": "USD per million tokens",
+      "data_indices": [11, 12, 13, 14, 15, 16]
+    },
+    {
+      "title": "Prompt caching cost multipliers vs base input",
+      "chart_type": "bar",
+      "x_label": "Cache operation",
+      "y_label": "Multiplier (x base input price)",
+      "data_indices": [4, 5, 6]
+    }
+  ],
+  "sources": [
+    "https://pypi.org/project/claude-agent-sdk/",
+    "https://github.com/anthropics/claude-agent-sdk-python",
+    "https://github.com/anthropics/claude-agent-sdk-typescript",
+    "https://code.claude.com/docs/en/agent-sdk/overview",
+    "https://code.claude.com/docs/en/agent-sdk/streaming-output",
+    "https://platform.claude.com/docs/en/agent-sdk/custom-tools",
+    "https://platform.claude.com/docs/en/agent-sdk/mcp",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "https://platform.claude.com/docs/en/about-claude/pricing"
+  ],
+  "limitations": "The npm registry page returned HTTP 403 to the fetcher, so the TypeScript version number was confirmed only via the GitHub repo page rather than the npm listing; weekly download counts could not be retrieved."
+}

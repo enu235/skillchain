@@ -1,0 +1,95 @@
+{
+  "subtopic": "local-llm-collaboration",
+  "subtopic_name": "Collaborating with local LLMs (Ollama, LM Studio, llama.cpp)",
+  "summary": "Local LLM runtimes (Ollama on port 11434, LM Studio on 1234, llama.cpp's llama-server on 8080, vLLM) all expose OpenAI-compatible REST endpoints, and several now also speak the Anthropic Messages API, which lets a developer pair Claude Code or the Agent SDK with on-device models for a TSLA-style research workflow. Common patterns are (a) Claude as orchestrator delegating bulk summarization, embedding, and overnight iteration to a local model via an MCP server such as OllamaClaude, (b) routing private SEC filings or notes to the local model so they never leave the machine, and (c) cost arbitrage: local Q4 inference is effectively free of marginal token cost while Claude handles high-quality reasoning. A 70B model at Q4_K_M needs roughly 40-46 GB VRAM, an 8B model only ~6 GB, making consumer hardware viable for the worker tier.",
+  "key_claims": [
+    {
+      "claim": "Ollama exposes OpenAI-compatible /v1/chat/completions, /v1/completions, /v1/embeddings, /v1/models, and /v1/responses endpoints at http://localhost:11434/v1/, with streaming, tool calling, vision, and JSON mode supported.",
+      "source_url": "https://docs.ollama.com/api/openai-compatibility",
+      "confidence": "high"
+    },
+    {
+      "claim": "LM Studio's local server defaults to http://localhost:1234/v1 and implements OpenAI-style /v1/chat/completions, /v1/completions, /v1/embeddings, /v1/models, and /v1/responses (Codex) endpoints with no API-key auth, relying on loopback binding for security.",
+      "source_url": "https://lmstudio.ai/docs/developer/openai-compat",
+      "confidence": "high"
+    },
+    {
+      "claim": "llama.cpp's llama-server binary provides OpenAI-compatible chat/completions, embeddings, and a separate /v1/messages endpoint that implements the Anthropic Messages API (including tool use via --jinja and SSE streaming), defaulting to port 8080.",
+      "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Code can be pointed at a local Ollama server by setting ANTHROPIC_BASE_URL=http://localhost:11434, ANTHROPIC_AUTH_TOKEN=ollama, and ANTHROPIC_API_KEY='', because Ollama exposes an Anthropic-compatible API path.",
+      "source_url": "https://docs.ollama.com/integrations/claude-code",
+      "confidence": "high"
+    },
+    {
+      "claim": "The OllamaClaude MCP server implements an orchestrator-worker pattern in which Claude Code orchestrates and 11 MCP tools (generate_code, review_file, analyze_files, etc.) delegate file-aware work to a local Ollama model, with reported reductions in Anthropic token consumption of up to 98.75% on file-review workloads.",
+      "source_url": "https://github.com/Jadael/OllamaClaude",
+      "confidence": "medium"
+    },
+    {
+      "claim": "Llama 3.1 8B at Q4_K_M occupies about 4.9 GB on disk and ~6.2 GB VRAM at 8k context, while Llama 3.3 70B at Q4_K_M is about 42.5 GB on disk and ~45.6 GB VRAM, making 8B viable on a single 8 GB consumer GPU and 70B requiring 48 GB-class hardware (e.g., 2x24 GB).",
+      "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms",
+      "confidence": "high"
+    },
+    {
+      "claim": "vLLM exposes an OpenAI-compatible server (Chat, Completions, Responses, Embeddings) and is the recommended high-throughput backend for large open models such as DeepSeek-R1 and Qwen variants, though full-precision DeepSeek-R1 requires ~16 H100-class GPUs for production-grade serving.",
+      "source_url": "https://github.com/vllm-project/vllm/blob/main/docs/serving/openai_compatible_server.md",
+      "confidence": "high"
+    },
+    {
+      "claim": "Hosted open-model APIs (Together, Fireworks, Groq) typically price at $0.05-$0.90 per 1M tokens, versus Claude Sonnet 4.5 at $3 input / $15 output per 1M tokens, so routing 70% of low-stakes summarization to a local or hosted open model and reserving Claude for ~10% of premium reasoning is the dominant cost-optimization pattern.",
+      "source_url": "https://costgoat.com/compare/llm-api",
+      "confidence": "medium"
+    },
+    {
+      "claim": "DeepSeek-R1-Distill-Qwen-14B at Q4_K_M needs roughly 9 GB on disk and 11 GB VRAM at 8k context, making a reasoning-capable distilled model practical on a single 12-16 GB consumer card for offline research iteration.",
+      "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms",
+      "confidence": "high"
+    }
+  ],
+  "data_points": [
+    {"label": "Ollama default port (OpenAI-compat base URL :11434/v1)", "value": 11434, "unit": "port", "source_url": "https://docs.ollama.com/api/openai-compatibility"},
+    {"label": "LM Studio default port (base URL :1234/v1)", "value": 1234, "unit": "port", "source_url": "https://lmstudio.ai/docs/developer/openai-compat"},
+    {"label": "llama-server default port", "value": 8080, "unit": "port", "source_url": "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md"},
+    {"label": "Llama 3.1 8B Q4_K_M VRAM (8k ctx)", "value": 6.2, "unit": "GB", "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms"},
+    {"label": "Llama 3.3 70B Q4_K_M VRAM (8k ctx)", "value": 45.6, "unit": "GB", "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms"},
+    {"label": "Qwen 2.5 72B Q4_K_M VRAM (8k ctx)", "value": 50.5, "unit": "GB", "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms"},
+    {"label": "DeepSeek-R1-Distill-Qwen-14B Q4_K_M VRAM (8k ctx)", "value": 11, "unit": "GB", "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms"},
+    {"label": "Qwen 3 8B Q4_K_M VRAM (8k ctx)", "value": 4, "unit": "GB", "source_url": "https://localllm.in/blog/ollama-vram-requirements-for-local-llms"},
+    {"label": "Claude Sonnet 4.5 input price", "value": 3.0, "unit": "USD per 1M tokens", "source_url": "https://costgoat.com/compare/llm-api"},
+    {"label": "Claude Sonnet 4.5 output price", "value": 15.0, "unit": "USD per 1M tokens", "source_url": "https://costgoat.com/compare/llm-api"},
+    {"label": "Hosted open-model API price (low end, e.g. DeepSeek/Llama via Together)", "value": 0.05, "unit": "USD per 1M tokens", "source_url": "https://costgoat.com/compare/llm-api"},
+    {"label": "Hosted open-model API price (high end)", "value": 0.9, "unit": "USD per 1M tokens", "source_url": "https://costgoat.com/compare/llm-api"},
+    {"label": "Token reduction reported by OllamaClaude MCP file-aware tools", "value": 98.75, "unit": "% reduction in Anthropic API tokens", "source_url": "https://github.com/Jadael/OllamaClaude"},
+    {"label": "Recommended Claude Code context window for Ollama backend", "value": 64000, "unit": "tokens", "source_url": "https://docs.ollama.com/integrations/claude-code"}
+  ],
+  "recommended_charts": [
+    {
+      "title": "VRAM required for popular local models at Q4_K_M (8k context)",
+      "chart_type": "bar",
+      "x_label": "Model",
+      "y_label": "VRAM (GB)",
+      "data_indices": [3, 4, 5, 6, 7]
+    },
+    {
+      "title": "Per-1M-token price: Claude Sonnet 4.5 vs hosted open-model range",
+      "chart_type": "bar",
+      "x_label": "Model / Provider tier",
+      "y_label": "USD per 1M tokens",
+      "data_indices": [8, 9, 10, 11]
+    }
+  ],
+  "sources": [
+    "https://docs.ollama.com/api/openai-compatibility",
+    "https://docs.ollama.com/integrations/claude-code",
+    "https://lmstudio.ai/docs/developer/openai-compat",
+    "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md",
+    "https://github.com/Jadael/OllamaClaude",
+    "https://localllm.in/blog/ollama-vram-requirements-for-local-llms",
+    "https://github.com/vllm-project/vllm/blob/main/docs/serving/openai_compatible_server.md",
+    "https://costgoat.com/compare/llm-api"
+  ],
+  "limitations": "Pricing data is sourced from a third-party comparison aggregator rather than Anthropic's price page directly, so the Claude Sonnet 4.5 figures should be re-verified against anthropic.com before any cost model is shipped. VRAM numbers are at 8k context; longer contexts (32k-128k), which a research workflow may need, push KV-cache usage substantially higher and were not deeply explored here."
+}

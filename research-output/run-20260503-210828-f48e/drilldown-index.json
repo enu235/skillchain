@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "claude-code-capabilities",
+    "path": "drilldown/claude-code-capabilities.json",
+    "degraded": false,
+    "reason": ""
+  },
+  {
+    "slug": "claude-agent-sdk",
+    "path": "drilldown/claude-agent-sdk.json",
+    "degraded": false,
+    "reason": ""
+  },
+  {
+    "slug": "tsla-research-workflow",
+    "path": "drilldown/tsla-research-workflow.json",
+    "degraded": false,
+    "reason": ""
+  },
+  {
+    "slug": "local-llm-collaboration",
+    "path": "drilldown/local-llm-collaboration.json",
+    "degraded": false,
+    "reason": ""
+  },
+  {
+    "slug": "hybrid-architecture",
+    "path": "drilldown/hybrid-architecture.json",
+    "degraded": false,
+    "reason": ""
+  }
+]

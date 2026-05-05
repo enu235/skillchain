@@ -1,0 +1,36 @@
+{
+  "topic": "How to use Claude Code and/or the Claude SDK to do deep research on a stock (e.g. TSLA) \u2014 its movements and the why \u2014 and how to have that process collaborate with a local LLM to keep pushing the research",
+  "run_id": "run-20260503-210828-f48e",
+  "created_at": "2026-05-03T21:08:28Z",
+  "brief": {
+    "audience": "technical",
+    "scope": "deep on 2 to 3 angles",
+    "seed_materials": "none"
+  },
+  "phases": {
+    "phase1_decomposition": {
+      "path": "subtopics.json",
+      "completed_at": "2026-05-03T21:09:24Z"
+    },
+    "phase2_drilldown": {
+      "path": "drilldown-index.json",
+      "completed_at": "2026-05-03T21:13:30Z"
+    },
+    "phase3_outliers": {
+      "path": "outliers.json",
+      "completed_at": "2026-05-03T21:16:21Z"
+    },
+    "phase4_xlsx": {
+      "path": "report.xlsx",
+      "completed_at": "2026-05-03T21:16:21Z"
+    },
+    "phase5_pptx": {
+      "path": "deck.pptx",
+      "completed_at": "2026-05-03T21:21:36Z"
+    },
+    "phase6_delivery": {
+      "completed_at": "2026-05-03T21:21:36Z"
+    }
+  },
+  "degraded_subtopics": []
+}

@@ -1,0 +1,171 @@
+{
+  "subtopic": "claude-code-capabilities",
+  "subtopic_name": "Claude Code CLI capabilities for deep research",
+  "summary": "Claude Code is Anthropic's terminal CLI for Sonnet/Opus/Haiku that ships features purpose-built for multi-step research: subagents that isolate context (built-in Explore, Plan, general-purpose, plus user-defined ones in .claude/agents/), a Skills system at .claude/skills/<name>/SKILL.md with YAML frontmatter and progressive-disclosure loading, slash commands unified with skills, lifecycle hooks driven from settings.json, MCP integration over stdio/HTTP/SSE via 'claude mcp add', built-in WebSearch and WebFetch tools, plan mode that restricts to read-only tools, and bundled skills like /loop and /batch for recurring or parallel work. Sonnet 4.6 and Opus 4.6 expose the full 1M-token context at standard pricing, making long financial document analysis tractable.",
+  "key_claims": [
+    {
+      "claim": "Claude Code subagents run in isolated context windows with their own system prompt, tool allowlist, and permissions, returning only a summary so the main conversation is not flooded with raw search results, logs, or file contents.",
+      "source_url": "https://code.claude.com/docs/en/sub-agents",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Code ships built-in subagents named Explore, Plan, and general-purpose, and lets users define more in .claude/agents/ with optional model overrides for cost-aware routing to Haiku.",
+      "source_url": "https://code.claude.com/docs/en/sub-agents",
+      "confidence": "high"
+    },
+    {
+      "claim": "Skills live at ~/.claude/skills/<name>/SKILL.md (personal) or .claude/skills/<name>/SKILL.md (project), use YAML frontmatter with fields like description, allowed-tools, disable-model-invocation, context: fork, and agent, and unify with the older .claude/commands/ slash command files.",
+      "source_url": "https://code.claude.com/docs/en/skills",
+      "confidence": "high"
+    },
+    {
+      "claim": "Skill descriptions plus when_to_use are truncated at 1,536 characters in the listing, and the overall character budget for skill listings scales at 1% of the context window with an 8,000-character fallback (overridable via SLASH_COMMAND_TOOL_CHAR_BUDGET).",
+      "source_url": "https://code.claude.com/docs/en/skills",
+      "confidence": "high"
+    },
+    {
+      "claim": "Hooks are JSON entries in settings.json that fire on lifecycle events (PreToolUse, PostToolUse, UserPromptSubmit, SessionStart/End, Stop, SubagentStop, PreCompact, Notification, and more) and can run shell commands, HTTP calls, MCP tools, prompts, or spawn agents to block or modify tool calls.",
+      "source_url": "https://code.claude.com/docs/en/hooks",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Code adds MCP servers via 'claude mcp add' supporting HTTP (recommended), stdio (local), and SSE (deprecated) transports, with three configuration scopes: local (default), project (shared via .mcp.json), and user (global).",
+      "source_url": "https://code.claude.com/docs/en/mcp",
+      "confidence": "high"
+    },
+    {
+      "claim": "Claude Code emits a warning when MCP tool output exceeds 10,000 tokens, and the cap is overridable via the MAX_MCP_OUTPUT_TOKENS environment variable.",
+      "source_url": "https://code.claude.com/docs/en/mcp",
+      "confidence": "high"
+    },
+    {
+      "claim": "WebSearch returns a small set of credible links and titles from Anthropic's server-side search; WebFetch downloads a known URL, converts HTML to Markdown via Turndown, truncates to roughly 100 KB of text, and answers a focused question against it rather than returning raw content.",
+      "source_url": "https://mikhail.io/2025/10/claude-code-web-tools/",
+      "confidence": "medium"
+    },
+    {
+      "claim": "Web search on the Claude API costs $10 per 1,000 searches plus standard token costs, while WebFetch has no per-call charge beyond the tokens of the fetched content.",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "confidence": "high"
+    },
+    {
+      "claim": "Plan mode restricts Claude to read-only tools so it produces a reviewable plan artifact you must approve before any write or shell side-effects, and it pairs with Opus 4.6's 1M-token context for large-codebase planning.",
+      "source_url": "https://claudelog.com/mechanics/plan-mode/",
+      "confidence": "medium"
+    },
+    {
+      "claim": "Claude Sonnet 4.6 and Opus 4.6 both expose the full 1M-token context window at standard per-token pricing, with no surcharge above 200K input tokens (a change from the Sonnet 4.5 era where >200K input was billed at a premium).",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "confidence": "high"
+    },
+    {
+      "claim": "Bundled skills include /simplify, /batch, /debug, /loop, and /claude-api, where /loop is a session-scoped scheduler that runs prompts on a recurring interval until the terminal session ends.",
+      "source_url": "https://code.claude.com/docs/en/skills",
+      "confidence": "high"
+    },
+    {
+      "claim": "Skill content uses dynamic context injection: backtick-bang shell expressions like !`git diff HEAD` execute before the prompt is sent, so the skill arrives with live data already inlined, which is ideal for grounding stock-research prompts in fresh prices, filings, or news feeds.",
+      "source_url": "https://code.claude.com/docs/en/skills",
+      "confidence": "high"
+    }
+  ],
+  "data_points": [
+    {
+      "label": "Claude Opus 4.7 input price",
+      "value": 5,
+      "unit": "USD per million tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Claude Opus 4.7 output price",
+      "value": 25,
+      "unit": "USD per million tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Claude Sonnet 4.6 input price",
+      "value": 3,
+      "unit": "USD per million tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Claude Sonnet 4.6 output price",
+      "value": 15,
+      "unit": "USD per million tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Claude Haiku 4.5 input price",
+      "value": 1,
+      "unit": "USD per million tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Claude Haiku 4.5 output price",
+      "value": 5,
+      "unit": "USD per million tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Sonnet 4.6 / Opus 4.6 / Opus 4.7 context window",
+      "value": 1000000,
+      "unit": "tokens",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Web search API cost",
+      "value": 10,
+      "unit": "USD per 1,000 searches",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Cache read price multiplier",
+      "value": 0.1,
+      "unit": "x base input price",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Skill description+when_to_use char cap",
+      "value": 1536,
+      "unit": "characters",
+      "source_url": "https://code.claude.com/docs/en/skills"
+    },
+    {
+      "label": "Default skill listing char budget fallback",
+      "value": 8000,
+      "unit": "characters",
+      "source_url": "https://code.claude.com/docs/en/skills"
+    },
+    {
+      "label": "MCP tool output warning threshold",
+      "value": 10000,
+      "unit": "tokens",
+      "source_url": "https://code.claude.com/docs/en/mcp"
+    },
+    {
+      "label": "WebFetch text truncation cap",
+      "value": 100,
+      "unit": "KB",
+      "source_url": "https://mikhail.io/2025/10/claude-code-web-tools/"
+    }
+  ],
+  "recommended_charts": [
+    {
+      "title": "Claude model pricing per million tokens (input vs output)",
+      "chart_type": "bar",
+      "x_label": "Model",
+      "y_label": "USD per million tokens",
+      "data_indices": [0, 1, 2, 3, 4, 5]
+    }
+  ],
+  "sources": [
+    "https://code.claude.com/docs/en/sub-agents",
+    "https://code.claude.com/docs/en/skills",
+    "https://code.claude.com/docs/en/mcp",
+    "https://code.claude.com/docs/en/hooks",
+    "https://platform.claude.com/docs/en/about-claude/pricing",
+    "https://mikhail.io/2025/10/claude-code-web-tools/",
+    "https://claudelog.com/mechanics/plan-mode/"
+  ],
+  "limitations": "Plan-mode primary docs page returned 403 so plan-mode details lean on a community-curated source (claudelog.com); exact MCP-registry server count was not extracted because the docs page renders the catalogue dynamically from api.anthropic.com/mcp-registry rather than printing a number."
+}

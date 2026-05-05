@@ -1,0 +1,55 @@
+{
+  "anomalies": [
+    {
+      "type": "low_confidence_conflict",
+      "description": "The local-llm-collaboration drilldown (medium confidence) cites Claude Sonnet 4.5 at $3 input / $15 output per 1M tokens as the current Claude reference for cost arbitrage, while the claude-code-capabilities drilldown (high confidence) states that the current model line is Sonnet 4.6 at those same $3/$15 prices and explicitly notes Sonnet 4.5 belonged to an older era with a different pricing structure (premium above 200K input tokens). A reader of only local-llm-collaboration would draw the wrong conclusion about which model is current and which pricing regime applies.",
+      "involved_subtopics": ["local-llm-collaboration", "claude-code-capabilities"],
+      "severity": "medium",
+      "evidence_refs": [
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 7},
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 8},
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 9},
+        {"subtopic": "claude-code-capabilities", "claim_or_data_index": 10}
+      ]
+    },
+    {
+      "type": "contradiction",
+      "description": "claude-code-capabilities data point 0 and claude-agent-sdk data point 11 both report Claude Opus 4.7 input at $5 per MTok and output at $25 per MTok, while every other Anthropic price reference in the corpus pegs Opus-tier models at materially higher figures historically; both subtopics cite the same canonical pricing page so they agree with each other, but the values appear anomalously low for the Opus tier compared with the Sonnet 4.6 figure of $3 input ($5 vs $3 puts Opus only ~1.7x Sonnet, versus the typical ~5x Opus-to-Sonnet input multiplier). Flagging as a low-severity contradiction-style anomaly because both subtopics agree, yet the figure is out of line with the rest of the price ladder.",
+      "involved_subtopics": ["claude-code-capabilities", "claude-agent-sdk"],
+      "severity": "low",
+      "evidence_refs": [
+        {"subtopic": "claude-code-capabilities", "claim_or_data_index": 0},
+        {"subtopic": "claude-code-capabilities", "claim_or_data_index": 1},
+        {"subtopic": "claude-agent-sdk", "claim_or_data_index": 11},
+        {"subtopic": "claude-agent-sdk", "claim_or_data_index": 12}
+      ]
+    },
+    {
+      "type": "stat_outlier",
+      "description": "Across the local-LLM VRAM data points in local-llm-collaboration (4 GB, 6.2 GB, 11 GB, 45.6 GB, 50.5 GB at Q4_K_M, 8k context), the max-to-min ratio is 12.6x, exceeding the 10x heuristic for stat outliers. The 70B/72B-class models (Llama 3.3 70B at 45.6 GB and Qwen 2.5 72B at 50.5 GB) sit far above the 8B/14B cluster. The spread is decision-relevant: it determines whether a research workflow can run on a single consumer GPU or requires 48 GB-class hardware, which is the practical hinge of the local-collaboration story.",
+      "involved_subtopics": ["local-llm-collaboration"],
+      "severity": "low",
+      "evidence_refs": [
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 3},
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 4},
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 5},
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 6},
+        {"subtopic": "local-llm-collaboration", "claim_or_data_index": 7}
+      ]
+    },
+    {
+      "type": "low_confidence_conflict",
+      "description": "tsla-research-workflow asserts (medium confidence) that TSLA's median 12-month analyst target is $398 with bull cases at $600 and bear cases at $247, implying a roughly +/-50% disagreement around the median. The same drilldown also reports (medium confidence) a P/E of ~357 vs a 12-month average of ~280, signaling extreme valuation. No high-confidence claim elsewhere in the corpus contradicts these figures, but the price-target spread itself is wide enough that a downstream agent that picks any single value will materially misrepresent Wall Street's view; flagging so the workbook surfaces the range rather than a point estimate.",
+      "involved_subtopics": ["tsla-research-workflow"],
+      "severity": "medium",
+      "evidence_refs": [
+        {"subtopic": "tsla-research-workflow", "claim_or_data_index": 4},
+        {"subtopic": "tsla-research-workflow", "claim_or_data_index": 9},
+        {"subtopic": "tsla-research-workflow", "claim_or_data_index": 13},
+        {"subtopic": "tsla-research-workflow", "claim_or_data_index": 14},
+        {"subtopic": "tsla-research-workflow", "claim_or_data_index": 15}
+      ]
+    }
+  ],
+  "summary": "Four anomalies surfaced across five non-degraded drilldowns. One medium-severity low-confidence conflict on Sonnet model versioning (4.5 vs 4.6 pricing era), one low-severity pricing contradiction where Opus 4.7 figures look out of line with the rest of the Claude price ladder, one low-severity statistical outlier in local-LLM VRAM requirements (12.6x max-to-min ratio across 8B-72B models), and one medium-severity TSLA price-target spread flag where bull and bear targets diverge ~50% from the median."
+}

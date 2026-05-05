@@ -1,0 +1,199 @@
+{
+  "subtopic": "tsla-research-workflow",
+  "subtopic_name": "Concrete TSLA deep-research workflow",
+  "summary": "A practical TSLA research workflow for a Claude Code agent has four stages. First, ingest primary disclosures from SEC EDGAR (10-K, 10-Q, 8-K) and Tesla IR (shareholder letters, transcripts). Second, layer market data via Polygon, Tiingo, Alpha Vantage, or yfinance for price, volume, and options. Third, fold in news and sentiment via Finnhub or NewsAPI. Fourth, run analytical frameworks: fundamentals (revenue, deliveries, margins), technicals (MA/RSI), macro (rates, EV demand), and narrative catalysts (FSD, robotaxi, Cybercab). Outputs are an executive summary, a price-vs-catalyst chart, a fundamentals table, and a bull/base/bear scenario memo.",
+  "key_claims": [
+    {
+      "claim": "Tesla Q1 2026 revenue rose 16% YoY to $22.38B with non-GAAP EPS of $0.41 and gross margin expansion to 21.1%, but vehicle deliveries of 358,023 missed estimates and inventory grew by ~50,000 units.",
+      "source_url": "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/",
+      "confidence": "high"
+    },
+    {
+      "claim": "Tesla posted its first ever annual revenue decline in 2025, with full-year revenue of about $94.8B (down ~3% YoY) and 1,636,129 deliveries (down ~9% YoY), reflecting expiry of the U.S. EV tax credit and rising competition.",
+      "source_url": "https://carboncredits.com/tesla-reports-first-ever-annual-revenue-drop-in-2025-carbon-credit-sales-also-dip-28/",
+      "confidence": "high"
+    },
+    {
+      "claim": "Tesla's energy storage business is now a material growth engine, deploying a record 46.7 GWh in 2025 and producing $12.77B in segment revenue, up sharply YoY.",
+      "source_url": "https://www.tesery.com/blogs/news/tesla-reports-q4-and-full-year-2025-financial-results-energy-storage-deploys-record-growth-while-automotive-figures-reflect-market-stabilization",
+      "confidence": "high"
+    },
+    {
+      "claim": "Robotaxi commercialization is the dominant 2026 narrative catalyst: Tesla operates an unsupervised fleet across Austin, Dallas, and Houston with planned expansion to Phoenix, Miami, Orlando, Tampa, and Las Vegas, though timelines have already slipped.",
+      "source_url": "https://www.tesery.com/blogs/news/tesla-confirms-aggressive-robotaxi-expansion-to-seven-major-us-cities-in-first-half-of-2026",
+      "confidence": "high"
+    },
+    {
+      "claim": "Wall Street is sharply split on TSLA: median 12-month target is around $398 (modest downside from current price), with bull cases (Wedbush) at $600 and bear cases (UBS) near $247, mostly driven by disagreement on the value of FSD/Optimus optionality.",
+      "source_url": "https://247wallst.com/investing/2026/04/07/wall-street-sees-22-upside-for-tesla-tsla-this-year/",
+      "confidence": "medium"
+    },
+    {
+      "claim": "SEC EDGAR exposes free, key-less REST APIs at data.sec.gov for company submissions and XBRL company facts, making it the canonical primary-source feed for a Claude agent ingesting Tesla's 10-K, 10-Q, and 8-K filings.",
+      "source_url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+      "confidence": "high"
+    },
+    {
+      "claim": "For market data, Polygon offers tick-level streams best for production, Tiingo provides clean EOD history for backtests, Alpha Vantage covers technicals/forex/crypto with strict free-tier limits, Finnhub adds news and sentiment, and yfinance is fastest for prototyping but unsuitable for production.",
+      "source_url": "https://www.nb-data.com/p/best-financial-data-apis-in-2026",
+      "confidence": "high"
+    },
+    {
+      "claim": "A practical Claude Code equity-research pattern, exemplified by the open-source claude-equity-research plugin, generates Wall Street-style reports combining executive summary, fundamentals, catalysts, bull/base/bear valuation, options flow, insider trades, and risk sizing from a single ticker prompt.",
+      "source_url": "https://github.com/quant-sentiment-ai/claude-equity-research",
+      "confidence": "high"
+    },
+    {
+      "claim": "Tesla's 8-K filings on EDGAR (e.g., the April 22, 2026 Q1 2026 Update and the April 2, 2026 production/deliveries 8-K) are the timeliest authoritative input and should drive event-triggered re-runs of the agent workflow.",
+      "source_url": "https://www.stocktitan.net/sec-filings/TSLA/",
+      "confidence": "high"
+    },
+    {
+      "claim": "TSLA trades at an extreme valuation with a P/E of about 357 as of May 1, 2026 versus a 12-month average of ~280, indicating that fundamentals-only models will systematically misprice the stock unless they also model AI/robotaxi optionality.",
+      "source_url": "https://www.macrotrends.net/stocks/charts/TSLA/tesla/pe-ratio",
+      "confidence": "medium"
+    }
+  ],
+  "data_points": [
+    {
+      "label": "Q1 2026 revenue",
+      "value": 22.38,
+      "unit": "USD billions",
+      "source_url": "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/"
+    },
+    {
+      "label": "Q1 2026 non-GAAP EPS",
+      "value": 0.41,
+      "unit": "USD per share",
+      "source_url": "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/"
+    },
+    {
+      "label": "Q1 2026 gross margin",
+      "value": 21.1,
+      "unit": "percent",
+      "source_url": "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/"
+    },
+    {
+      "label": "Q1 2026 vehicle deliveries",
+      "value": 358023,
+      "unit": "vehicles",
+      "source_url": "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/"
+    },
+    {
+      "label": "Q1 2026 energy storage deployment",
+      "value": 8.8,
+      "unit": "GWh",
+      "source_url": "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/"
+    },
+    {
+      "label": "FY2025 total revenue",
+      "value": 94.8,
+      "unit": "USD billions",
+      "source_url": "https://carboncredits.com/tesla-reports-first-ever-annual-revenue-drop-in-2025-carbon-credit-sales-also-dip-28/"
+    },
+    {
+      "label": "FY2025 vehicle deliveries",
+      "value": 1636129,
+      "unit": "vehicles",
+      "source_url": "https://247wallst.com/investing/2026/04/07/wall-street-sees-22-upside-for-tesla-tsla-this-year/"
+    },
+    {
+      "label": "FY2025 energy storage deployments",
+      "value": 46.7,
+      "unit": "GWh",
+      "source_url": "https://www.tesery.com/blogs/news/tesla-reports-q4-and-full-year-2025-financial-results-energy-storage-deploys-record-growth-while-automotive-figures-reflect-market-stabilization"
+    },
+    {
+      "label": "FY2025 energy segment revenue",
+      "value": 12.77,
+      "unit": "USD billions",
+      "source_url": "https://www.tesery.com/blogs/news/tesla-reports-q4-and-full-year-2025-financial-results-energy-storage-deploys-record-growth-while-automotive-figures-reflect-market-stabilization"
+    },
+    {
+      "label": "FY2025 regulatory credit revenue",
+      "value": 1.99,
+      "unit": "USD billions",
+      "source_url": "https://carboncredits.com/tesla-reports-first-ever-annual-revenue-drop-in-2025-carbon-credit-sales-also-dip-28/"
+    },
+    {
+      "label": "TSLA 52-week low",
+      "value": 214.25,
+      "unit": "USD per share",
+      "source_url": "https://www.macrotrends.net/stocks/charts/TSLA/tesla/pe-ratio"
+    },
+    {
+      "label": "TSLA 52-week high",
+      "value": 498.83,
+      "unit": "USD per share",
+      "source_url": "https://www.macrotrends.net/stocks/charts/TSLA/tesla/pe-ratio"
+    },
+    {
+      "label": "TSLA P/E ratio (May 1 2026)",
+      "value": 357.04,
+      "unit": "ratio",
+      "source_url": "https://www.macrotrends.net/stocks/charts/TSLA/tesla/pe-ratio"
+    },
+    {
+      "label": "TSLA median analyst 12-mo price target",
+      "value": 398.38,
+      "unit": "USD per share",
+      "source_url": "https://247wallst.com/investing/2026/04/07/wall-street-sees-22-upside-for-tesla-tsla-this-year/"
+    },
+    {
+      "label": "TSLA bull-case price target (Wedbush/Ives)",
+      "value": 600,
+      "unit": "USD per share",
+      "source_url": "https://www.tipranks.com/news/tesla-stock-tsla-battles-500-as-bulls-and-bears-clash"
+    },
+    {
+      "label": "TSLA bear-case price target (UBS/Spak)",
+      "value": 247,
+      "unit": "USD per share",
+      "source_url": "https://www.tipranks.com/news/tesla-stock-tsla-battles-500-as-bulls-and-bears-clash"
+    },
+    {
+      "label": "FY2026 guided capex",
+      "value": 25,
+      "unit": "USD billions",
+      "source_url": "https://www.heygotrade.com/en/blog/tesla-q1-2026-earnings-recap/"
+    },
+    {
+      "label": "Unsupervised robotaxi fleet size (early 2026)",
+      "value": 25,
+      "unit": "vehicles",
+      "source_url": "https://eletric-vehicles.com/tesla/tesla-ramps-unsupervised-robotaxi-fleet-to-25-vehicles/"
+    }
+  ],
+  "recommended_charts": [
+    {
+      "title": "TSLA analyst price target range vs 52-week range",
+      "chart_type": "bar",
+      "x_label": "Reference point",
+      "y_label": "USD per share",
+      "data_indices": [10, 11, 13, 14, 15]
+    },
+    {
+      "title": "Tesla quarterly vs annual scale: revenue and deliveries",
+      "chart_type": "bar",
+      "x_label": "Metric",
+      "y_label": "Value (mixed units)",
+      "data_indices": [0, 3, 5, 6]
+    }
+  ],
+  "sources": [
+    "https://electrek.co/2026/04/22/tesla-tsla-q1-2026-financial-results/",
+    "https://carboncredits.com/tesla-reports-first-ever-annual-revenue-drop-in-2025-carbon-credit-sales-also-dip-28/",
+    "https://www.tesery.com/blogs/news/tesla-reports-q4-and-full-year-2025-financial-results-energy-storage-deploys-record-growth-while-automotive-figures-reflect-market-stabilization",
+    "https://www.tesery.com/blogs/news/tesla-confirms-aggressive-robotaxi-expansion-to-seven-major-us-cities-in-first-half-of-2026",
+    "https://247wallst.com/investing/2026/04/07/wall-street-sees-22-upside-for-tesla-tsla-this-year/",
+    "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+    "https://www.nb-data.com/p/best-financial-data-apis-in-2026",
+    "https://github.com/quant-sentiment-ai/claude-equity-research",
+    "https://www.stocktitan.net/sec-filings/TSLA/",
+    "https://www.macrotrends.net/stocks/charts/TSLA/tesla/pe-ratio",
+    "https://www.tipranks.com/news/tesla-stock-tsla-battles-500-as-bulls-and-bears-clash",
+    "https://eletric-vehicles.com/tesla/tesla-ramps-unsupervised-robotaxi-fleet-to-25-vehicles/",
+    "https://www.heygotrade.com/en/blog/tesla-q1-2026-earnings-recap/"
+  ],
+  "limitations": "Several primary sources (Tesla IR press release, SEC.gov EDGAR API page, Yahoo Finance key statistics) returned 403/503 to WebFetch, so a few figures (TSLA spot market cap, automotive segment revenue split) were sourced from secondary aggregators with medium confidence; a production agent should hit data.sec.gov and ir.tesla.com directly with proper headers."
+}
